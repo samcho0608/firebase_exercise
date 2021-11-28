@@ -57,3 +57,14 @@ export const getParallelTest = functions.https.onRequest((request, response) => 
         response.status(500).send(error);
     })
 });
+
+// Example of async and await keywords
+async function myFunction() : Promise<string> {
+    const rankPromise = getRank();
+    const rank = await rankPromise;
+    return `firebase # ${rank}`;
+}
+
+function getRank() {
+    return Promise.resolve(1)
+}
