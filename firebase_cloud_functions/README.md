@@ -5,6 +5,13 @@ following the [Firecast tutorial](https://www.youtube.com/playlist?list=PLl-K7zZ
 
 ---
 
+# Firebase Commands
+* `npm run-script lint` : runs lint to check the existence of possible errors within the project.
+* `npm run-script build` : builds Javascript translation of Typescript code written.
+* `firebase serve --only functions`: hosts a server for currently written Cloud Functions code
+* `firebase deploy`: deploys current project
+
+
 # Firebase Cloud Functions Rules
 
 ## Termination
