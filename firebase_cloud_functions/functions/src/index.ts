@@ -2,8 +2,19 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 admin.initializeApp();
 
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
+// How to write a HTTP GET Request
+export const getUser = functions.https.onRequest((request, response) => {
+    admin.firestore().doc("user/USER00000000").get()
+    .then((snapshot) => {
+        const data = snapshot.data();
+        response.send(data);
+    })
+    .catch((error) => {
+        // handle errors
+        console.log(error);
+        response.status(500).send(error);
+    });
+});
 
 // How to automatically send messages via FCM on data update in Firestore
 export const onUserUpdate = functions.firestore.document("user/USER00000000")
@@ -23,16 +34,26 @@ export const onUserUpdate = functions.firestore.document("user/USER00000000")
         });
     });
 
-// How to write a HTTP GET Request
-export const getUser = functions.https.onRequest((request, response) => {
-    admin.firestore().doc("user/USER00000000").get()
-    .then((snapshot) => {
-        const data = snapshot.data();
-        response.send(data);
+// Sequential and Parallel work in Cloud Functions
+export const getParallelTest = functions.https.onRequest((request, response) => {
+    admin.firestore().collection("user").get()
+    .then((usersSnapshot) => {
+        const majors: any[] = [];
+        usersSnapshot.docs.forEach((user) => {
+            majors.push(admin.firestore().doc("majors/MAJOR00000000").get());
+        });
+        return Promise.all(majors);
+    })
+    .then((majorsSnapshot) => {
+        const results: any[] = [];
+        majorsSnapshot.forEach((majorSnap) => {
+            const data = majorSnap.data();
+            results.push(data);
+        });
+        response.send(results);
     })
     .catch((error) => {
-        // handle errors
         console.log(error);
         response.status(500).send(error);
-    });
+    })
 });
